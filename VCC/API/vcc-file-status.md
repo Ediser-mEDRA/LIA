@@ -10,62 +10,48 @@ LA API accetta una HTTP Request GET con uno o più dei parametri indicati nel pa
 L'endpoint della API è 
 `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v1/status`
 ## Parametri
-I parametri accettati della API sono:
+I parametri accettati della API sono elencati nella tabella seguente. E' possibile specificare uno o più parametri contemporaneamente, che verranno considerati “in AND”, cioè i record restituiti dovranno soddisfare tutti i criteri specificati.
 
-I criteri di ricerca saranno simili a quelli della pagina dell’elenco richieste:
--	senderUsername (username di chi ha sottomesso la richiesta, es. “LUSEV000164”);
--	submissionId (id della sottomissione, es. “LVSU0000168”);
--	requestId (id della richiesta, es. “LVRE0000245”);
--	publisherName (denominazione dell’editore, completa o parziale, es. “Chiarelettere” – case insensitive);
--	isbnPrefix (prefisso ISBN, con o senza trattini, es. “978886002” o “978-88-6002”);
--	isbnCodes (lista di codici ISBN, con o senza trattini, separati da virgola es. “9788860029997,9788860024459”). E’ possibile indicare un massimo di 35 codici;
--	publicationTitle (titolo della pubblicazione, completo o parziale, es. “asini I” – case insensitive);
--	requestType (codice interno del tipo di richiesta):
-o	CERTIFICATION;
-o	CONVERSION_AND_CERTIFICATION,
--	requestStatus (codice interno dello stato della richiesta):
-o	WAITING_FOR_PROCESS;
-o	IN_PROCESS;
-o	REJECTED;
-o	CLOSED;
-o	LOADED.
--	requestPriority (codice interno della priorità della richiesta):
-o	0;
-o	1;
-o	2.
--	requestCreationDate (data di creazione della richiesta, in formato ISO-8601, con la Time Part opzionale), espressa come:
-o	singola data (es. “2011-12-03” oppure “2011-12-03T10:15:30”): verranno restituite tutte le richieste create da quella data alla data corrente;
-o	range di date, separate da virgola (es. “2011-01-01,2012-12-31” oppure “2011-01-01T00:00:00,2012-12-31T23:59:59”): verranno restituite tutte le richieste inviate tra la prima e la seconda data;
--	requestLastModifiedDate (data di ultima modifica della richiesta, in formato ISO-8601, con la Time Part opzionale), espressa come:
-o	singola data (es. “2011-12-03” oppure “2011-12-03T10:15:30”) : verranno restituite tutte le richieste aggiornate da quella data alla data corrente;
-o	range di date, separate da virgola (es. “2011-01-01,2012-12-31” oppure “2011-01-01T00:00:00,2012-12-31T23:59:59”) : verranno restituite tutte le richieste aggiornate tra la prima e la seconda data;
--	fileStatus (codice interno dello stato di lavorazione del file corrente):
-o	WAITING_FOR_CHECK;
-o	IN_CHECKING;
-o	INACCESSIBLE;
-o	IN_CONVERTING;
-o	CONVERTED;
-o	CONVERSION_REFUSED;
-o	ACCESSIBLE;
-o	IN_TESTING;
-o	IN_APPROVING;
-o	REFUSED;
-o	ENDORSED;
-o	APPROVED;
-o	REFUSED_AND_IN_CONVERTING;
-o	REFUSED_AND_CONVERTED;
-o	BACKUP.
-Sarà possibile specificare uno o più criteri contemporaneamente, che verranno considerati “in AND”, cioè i record restituiti dovranno soddisfare tutti i criteri specificati.
+| Parametro | Tipo | Case sensitive | Matching parziale | Descrizione | Esempio |
+| --- | --- | --- | --- | --- | --- |
+| `senderUsername` | string | SI | NO | username dell'utente che ha sottomesso la richiesta | `senderUsername=LUSEV000000` |
+| `submissionId` | string  | SI | NO | id della sottomissione | `submissionId=LVSU0000000` |
+| `requestId` | string  | SI | NO | id della richiesta | `requestId=LVRE0000000` |
+| `publisherName` | string  | NO | SI | denominazione dell'editore, completa o parziale | `publisherName=Ediser` |
+| `isbnPrefix` | string  | SI | NO | prefisso ISBN, con o senza trattini | `isbnPrefix=978-88-99630` <br/> `isbnPrefix=9788899630` |
+| `isbnCodes` | string  | SI | NO | lista di codici ISBN, con o senza trattini, separati da virgola. <br/> E' possibile indicare un massimo di 35 codici. | `isbnCodes=978-88-99630-00-3` <br/> `isbnCodes=9788899630003` <br/> `isbnCodes=978-88-99630-00-3,978-88-99630-01-0` <br/> `isbnCodes=9788899630003,9788899630010` |
+| `publicationTitle` | string  | NO | SI | titolo della pubblicazione, completo o parziale | `publicationTitle=Tra+editoria` |
+| `requestType` | CERTIFICATION <br/> CONVERSION_AND_CERTIFICATION | SI | NO | tipo di richiesta | `requestType=CERTIFICATION` |
+| `requestStatus` | WAITING_FOR_PROCESS <br/> IN_PROCESS <br/> REJECTED <br/> CLOSED <br/> LOADED | SI | NO | stato della richiesta | `requestStatus=CLOSED` |
+| `requestPriority` | 0 <br/> 1 <br/> 2 | SI | NO | priorità della richiesta | `requestPriority=0` |
+| `requestCreationDate` | date (ISO-8601) | SI | NO | data di creazione della richiesta, in formato ISO-8601, con la Time Part opzionale. <br/> Può essere espressa come: <br/>*singola data*:verranno restituite tutte le richieste create da quella data in poi;<br/>*range di date* (separate da virgola): verranno restituite tutte le richieste create tra la prima e la seconda data (incluse). | `requestCreationDate=2022-04-22` <br/> `requestCreationDate=2022-04-22T09:01:30` <br/> `requestCreationDate=2022-04-22,2022-04-24` <br/> `requestCreationDate=2022-04-22T09:01:30,2022-04-24T23:50:01` |
+| `requestLastModifiedDate` | date (ISO-8601) | SI | NO | data di ultima modifica dello stato della richiesta, in formato ISO-8601, con la Time Part opzionale. <br/> Può essere espressa come: <br/>*singola data*:verranno restituite tutte le richieste il cui stato è stato aggiornato da quella data in poi;<br/>*range di date* (separate da virgola): verranno restituite tutte le richieste il cui stato è stato aggiornato tra la prima e la seconda data (incluse). | `requestLastModifiedDate=2022-04-22` <br/> `requestLastModifiedDate=2022-04-22T09:01:30` <br/> `requestLastModifiedDate=2022-04-22,2022-04-24` <br/> `requestLastModifiedDate=2022-04-22T09:01:30,2022-04-24T23:50:01` |
+| `fileStatus` | WAITING_FOR_CHECK <br/> IN_CHECKING <br/> INACCESSIBLE <br/> IN_CONVERTING <br/> CONVERTED <br/> CONVERSION_REFUSED <br/> ACCESSIBLE <br/> IN_TESTING <br/> IN_APPROVING <br/> REFUSED <br/> ENDORSED <br/> APPROVED <br/> REFUSED_AND_IN_CONVERTING <br/> REFUSED_AND_CONVERTED <br/> BACKUP | SI | NO | stato di lavorazione del file | `fileStatus=ENDORSED` |
+## Formato Risposta
+E' possibile indicare nell'http header `Accept` della request il formato desiderato della risposta:
+| Formato | Accept | Default |
+| --- | --- | --- |
+| JSON | `application/json` | :white_check_mark: |
+| XML |  `application/xml` | |
+## Risposta
+La risposta conterrà 0 o più record, ognuno con i seguenti campi:
+| Campo | Tipo | Può essere nullo | Descrizione | Esempio |
+| --- | --- | --- | --- | --- |
+| senderUsername | string | NO | username dell'utente che ha sottomesso la richiesta | `LUSEV000000` |
+| submissionId | string |  NO | id della sottomissione | `LVSU0000000` |
+| requestId | string | NO | id della richiesta | `LVRE0000000` |
+| publisherName | string | NO | denominazione dell'editore associata al prefisso ISBN | `Ediser` |
+| imprintName | string | NO | denominazione del marchio associata al prefisso ISBN | `Ediser` |
+| isbnPrefix | string | NO | prefisso ISBN, sempre nella forma con trattini | `978-88-99630` |
+| isbnCode | string | NO | prefisso ISBN, sempre nella forma con trattini | `978-88-99630-00-3` |
+| publicationTitle | string | NO | il titolo della pubblicazione | `Introduzione. Tra editoria e università` |
+| productType | EPUB2 <br/> EPUB3 | NO | il titolo della pubblicazione | `EPUB2` |
+
 La risposta sarà disponibile nei formati JSON (default) o XML. Il formato desiderato andrà specificato tramite content negotiation. I campi presenti nella risposta saranno:
--	senderUsername;
--	submissionId;
--	requestId;
--	publisherName (è la label associata al prefisso ISBN, non quella presente nei metadati ONIX);
--	imprintName (è la label associata al prefisso ISBN, non quella presente nei metadati ONIX);
--	isbnPrefix (sempre nella forma con trattini);
--	isbnCode (il codice ISBN, sempre nella forma con trattini);
--	publicationTitle (il titolo della pubblicazione dichiarato dall’utente all’atto della sottomissione del file);
--	productType (il tipo di prodotto: EPUB2 o EPUB3);
+
+
+
+-	 (il tipo di prodotto:  o );
 -	requestType;
 -	requestStatus;
 -	requestPriority;
