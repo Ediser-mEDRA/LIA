@@ -1,34 +1,34 @@
 # VCC FILE STATUS API
 API che permette di ottenere lo stato di lavorazione di una o più richieste inviate al VCC di LIA. Se il file risulta certificato, nella risposta vengono inseriti i codici ONIX e gli EPUB Accessibility Metadata.
-## Autenticazione
-La API è sotto basic authentication. Le credenziali sono le stesse utilizzate per accedere al VCC. 
-## Autorizzazione
-Le regole di autorizzazione sono le stesse in vigore nel VCC, cioè un utente ha visibilità solamente sui prefissi ISBN per i quali è abilitato.
-## Metodo
-LA API accetta una HTTP Request GET con uno o più dei parametri indicati nel paragrafo successivo.
 ## Endpoint
 L'endpoint della API è 
 `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v1/status`
+## Autenticazione
+La API è sotto basic authentication. Le credenziali sono le stesse utilizzabili per accedere al VCC. 
+## Autorizzazione
+Le regole di autorizzazione sono le stesse in vigore nel VCC, cioè un utente ha visibilità solamente sui prefissi ISBN per i quali è abilitato.
+## Metodo
+LA API accetta una HTTP Request GET con uno o più dei parametri indicati nel paragrafo [Parametri](#parametri).
 ## Parametri
 I parametri accettati della API sono elencati nella tabella seguente. E' possibile specificare uno o più parametri contemporaneamente, che verranno considerati “in AND”, cioè i record restituiti dovranno soddisfare tutti i criteri specificati. L'ordine dei parametri non è significativo.
 
-| Parametro | Tipo | Case sensitive | Matching parziale | Descrizione | Esempio |
+| Parametro | Tipo | Case sensitive | Matching parziale | Descrizione | Esempi |
 | --- | --- | --- | --- | --- | --- |
 | `senderUsername` | string | SI | NO | username dell'utente che ha sottomesso la richiesta | `senderUsername=LUSEV000000` |
 | `submissionId` | string | SI | NO | id della sottomissione | `submissionId=LVSU0000000` |
 | `requestId` | string | SI | NO | id della richiesta | `requestId=LVRE0000000` |
-| `publisherName` | string | NO | SI | denominazione dell'editore, completa o parziale | `publisherName=Ediser` |
+| `publisherName` | string | NO | SI | denominazione dell'editore, completa o parziale | `publisherName=Ediser` <br/> `publisherName=Edi` <br/> `publisherName=SER` |
 | `isbnPrefix` | string | SI | NO | prefisso ISBN, con o senza trattini | `isbnPrefix=978-88-99630` <br/> `isbnPrefix=9788899630` |
 | `isbnCodes` | string | SI | NO | lista di codici ISBN, con o senza trattini, separati da virgola. <br/> E' possibile indicare un massimo di 35 codici. | `isbnCodes=978-88-99630-00-3` <br/> `isbnCodes=9788899630003` <br/> `isbnCodes=978-88-99630-00-3,978-88-99630-01-0` <br/> `isbnCodes=9788899630003,9788899630010` |
-| `publicationTitle` | string | NO | SI | titolo della pubblicazione, completo o parziale | `publicationTitle=Tra+editoria` |
+| `publicationTitle` | string | NO | SI | titolo della pubblicazione, completo o parziale | `publicationTitle=Tra+editoria` <br/> `publicationTitle=editoria` <br/> `publicationTitle=TRA` |
 | `requestType` | [enum](#request-type) | SI | NO | tipo di richiesta | `requestType=CERTIFICATION` |
 | `requestStatus` | [enum](#request-status) | SI | NO | stato della richiesta | `requestStatus=CLOSED` |
 | `requestPriority` | [enum](#request-priority) | SI | NO | priorità della richiesta | `requestPriority=0` |
 | `requestCreationDate` | [request-date](#request-date-type) | SI | NO | data di creazione della richiesta | `requestCreationDate=2022-04-22` <br/> `requestCreationDate=2022-04-22T09:01:30` <br/> `requestCreationDate=2022-04-22,2022-04-24` <br/> `requestCreationDate=2022-04-22T09:01:30,2022-04-24T23:50:01` |
 | `requestLastModifiedDate` | [request-date](#request-date-type) | SI | NO | data di ultima modifica dello stato della richiesta | `requestLastModifiedDate=2022-04-22` <br/> `requestLastModifiedDate=2022-04-22T09:01:30` <br/> `requestLastModifiedDate=2022-04-22,2022-04-24` <br/> `requestLastModifiedDate=2022-04-22T09:01:30,2022-04-24T23:50:01` |
 | `fileStatus` | [enum](#file-status) | SI | NO | stato di lavorazione del file | `fileStatus=ENDORSED` |
-## Esempi di query
-Ecco alcuni esempi di query:
+## Esempi di richieste
+Ecco alcuni esempi di richieste:
 - lo stato della richiesta LVRE0000000:
 
 `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v1/status?requestId=LVRE0000000`
@@ -40,11 +40,11 @@ Ecco alcuni esempi di query:
 `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v1/status?fileStatus=ENDORSED&isbnPrefix=978-88-99630&requestLastModifiedDate=2022-04-01,2022-04-30&requestPriority=2`
 
 ## Formato Risposta
-E' possibile indicare nell'http header `Accept` della request il formato desiderato della risposta:
-| Formato | Accept | Default |
-| --- | --- | --- |
-| JSON | `application/json` | :white_check_mark: |
-| XML |  `application/xml` | |
+E' possibile indicare nell'HTTP header `Accept` della HTTP Request il formato desiderato della risposta:
+| Formato | Accept | Default | |
+| --- | --- | --- | --- |
+| JSON | `application/json` | :white_check_mark: | [esempio di risposta in json](#esempio-di-risposta-in-json) |
+| XML |  `application/xml` | | [esempio di risposta in xml](#esempio-di-risposta-in-xml) |
 ## Risposta
 La risposta conterrà 0 o più record, ognuno con i seguenti campi:
 | Campo | Tipo | Può essere nullo | Descrizione | Esempio |
@@ -52,8 +52,8 @@ La risposta conterrà 0 o più record, ognuno con i seguenti campi:
 | senderUsername | string | NO | username dell'utente che ha sottomesso la richiesta | `LUSEV000000` |
 | submissionId | string |  NO | id della sottomissione | `LVSU0000000` |
 | requestId | string | NO | id della richiesta | `LVRE0000000` |
-| publisherName | string | NO | denominazione dell'editore associata al prefisso ISBN | `Ediser` |
-| imprintName | string | NO | denominazione del marchio associata al prefisso ISBN | `Ediser` |
+| publisherName | string | NO | denominazione dell'editore associato al prefisso ISBN | `Ediser` |
+| imprintName | string | NO | denominazione del marchio associato al prefisso ISBN | `Ediser` |
 | isbnPrefix | string | NO | prefisso ISBN, sempre nella forma con trattini | `978-88-99630` |
 | isbnCode | string | NO | codice ISBN, sempre nella forma con trattini | `978-88-99630-00-3` |
 | publicationTitle | string | NO | titolo della pubblicazione | `Introduzione. Tra editoria e università` |
@@ -67,8 +67,8 @@ La risposta conterrà 0 o più record, ognuno con i seguenti campi:
 | fileStatus | [enum](#file-status) | NO | stato di lavorazione del file | `ENDORSED` |
 | liaNotes | string | SI | note sulla lavorazione del file redatte da LIA | `testi alternativi per immagini` |
 | automaticChecksOutput | string | SI | note sull'esito dei check automatici | `-----EPUB CHECK VERSIONE 4.0.2----- [...]` |
-| accessibilityMetadata.onix | xml | SI | xml con i codici ONIX sull'accessibilità | `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metadata>\n   <ProductFormFeature>\n [...]` |
-| accessibilityMetadata.epub | xml | SI | xml con gli EPUP Accessibility Metadata | `<?xml version=\"1.0\" encoding=\"UTF-8\"?><metadata><meta name=\"dcterms:conformsTo\ [...]` |
+| accessibilityMetadata.onix | xml | SI | xml con i codici ONIX sull'accessibilità | `<ProductFormFeature><ProductFormFeatureType>09</ProductFormFeatureType> [...]` |
+| accessibilityMetadata.epub | xml | SI | xml con gli EPUP Accessibility Metadata | `<meta name="dcterms:conformsTo" content="EPUB-A11Y-11_WCAG-21-AA"/> [...]` |
 
 ### Esempio di risposta in json
 La risposta in formato json è composta da un array contenente da 0 a n oggetti, ognuno dei quali rappresenta una richiesta che corrisponde ai criteri utilizzati nella ricerca.
@@ -248,7 +248,7 @@ I valori ammessi per il campo `fileStatus` sono:
 | `INACCESSIBLE` | Non Accessibile | il file è stato dichiarato non accessibile |
 | `IN_CONVERTING` | In Conversione | è in corso la conversione del file per renderlo accessibile |
 | `CONVERTED` | Converted | il file è stato convertito in un nuovo file accessibile |
-| `CONVERSION_REFUSED` | Conversione Rifiutato | non è stato possibile convertire il file |
+| `CONVERSION_REFUSED` | Conversione Rifiutata | non è stato possibile convertire il file |
 | `ACCESSIBLE` | Accessibile | il file è stato dichiarato accessibile |
 | `IN_TESTING` | In Testing | è in corso l'attività di testing sul file |
 | `IN_APPROVING` | In Attesa Di Approvazione | il file è stato convertito ed è in attesa di essere approvato dall'editore |
@@ -264,7 +264,7 @@ I valori ammessi per il campo `fileStatus` sono:
 I possibili HTTP Status Code della risposta sono:
 | Code | Label | Descrizione |
 | --- | --- | --- |
-| 200 | OK | se la risposta alla richiesta è presente nel body della HTTP Response |
-| 400 | Bad Request | se la HTTP Request non è valida (es. non viene indicato nessun parametro di ricerca) |
-| 401 | Unauthorized | se non vengono fornite delle credenziali corrette |
-| 500 | Internal Server Error | se non è possibile elaborare la HTTP Request a causa di un errore interno della API | 
+| `200` | OK | se la richiesta è stata elaborata |
+| `400` | Bad Request | se la HTTP Request non è valida (es. non viene indicato nessun parametro di ricerca) |
+| `401` | Unauthorized | se non vengono fornite delle credenziali corrette |
+| `500` | Internal Server Error | se non è possibile elaborare la HTTP Request a causa di un errore interno della API | 
