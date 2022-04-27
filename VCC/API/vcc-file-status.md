@@ -12,7 +12,7 @@ L'endpoint della API è
 ## Parametri
 I parametri accettati della API sono elencati nella tabella seguente. E' possibile specificare uno o più parametri contemporaneamente, che verranno considerati “in AND”, cioè i record restituiti dovranno soddisfare tutti i criteri specificati. L'ordine dei parametri non è significativo.
 
-| Parametro | Tipo/Enum | Case sensitive | Matching parziale | Descrizione | Esempio |
+| Parametro | Tipo | Case sensitive | Matching parziale | Descrizione | Esempio |
 | --- | --- | --- | --- | --- | --- |
 | `senderUsername` | string | SI | NO | username dell'utente che ha sottomesso la richiesta | `senderUsername=LUSEV000000` |
 | `submissionId` | string | SI | NO | id della sottomissione | `submissionId=LVSU0000000` |
@@ -21,12 +21,12 @@ I parametri accettati della API sono elencati nella tabella seguente. E' possibi
 | `isbnPrefix` | string | SI | NO | prefisso ISBN, con o senza trattini | `isbnPrefix=978-88-99630` <br/> `isbnPrefix=9788899630` |
 | `isbnCodes` | string | SI | NO | lista di codici ISBN, con o senza trattini, separati da virgola. <br/> E' possibile indicare un massimo di 35 codici. | `isbnCodes=978-88-99630-00-3` <br/> `isbnCodes=9788899630003` <br/> `isbnCodes=978-88-99630-00-3,978-88-99630-01-0` <br/> `isbnCodes=9788899630003,9788899630010` |
 | `publicationTitle` | string | NO | SI | titolo della pubblicazione, completo o parziale | `publicationTitle=Tra+editoria` |
-| `requestType` | CERTIFICATION <br/> CONVERSION_AND_CERTIFICATION | SI | NO | tipo di richiesta | `requestType=CERTIFICATION` |
-| `requestStatus` | WAITING_FOR_PROCESS <br/> IN_PROCESS <br/> REJECTED <br/> CLOSED <br/> LOADED | SI | NO | stato della richiesta | `requestStatus=CLOSED` |
-| `requestPriority` | 0 <br/> 1 <br/> 2 | SI | NO | priorità della richiesta | `requestPriority=0` |
-| `requestCreationDate` | date (ISO-8601) | SI | NO | data di creazione della richiesta, in formato ISO-8601, con la Time Part opzionale. <br/> Può essere espressa come: <br/>*singola data*:verranno restituite tutte le richieste create da quella data in poi;<br/>*range di date* (separate da virgola): verranno restituite tutte le richieste create tra la prima e la seconda data (incluse). | `requestCreationDate=2022-04-22` <br/> `requestCreationDate=2022-04-22T09:01:30` <br/> `requestCreationDate=2022-04-22,2022-04-24` <br/> `requestCreationDate=2022-04-22T09:01:30,2022-04-24T23:50:01` |
-| `requestLastModifiedDate` | date (ISO-8601) | SI | NO | data di ultima modifica dello stato della richiesta, in formato ISO-8601, con la Time Part opzionale. <br/> Può essere espressa come: <br/>*singola data*:verranno restituite tutte le richieste il cui stato è stato aggiornato da quella data in poi;<br/>*range di date* (separate da virgola): verranno restituite tutte le richieste il cui stato è stato aggiornato tra la prima e la seconda data (incluse). | `requestLastModifiedDate=2022-04-22` <br/> `requestLastModifiedDate=2022-04-22T09:01:30` <br/> `requestLastModifiedDate=2022-04-22,2022-04-24` <br/> `requestLastModifiedDate=2022-04-22T09:01:30,2022-04-24T23:50:01` |
-| `fileStatus` | WAITING_FOR_CHECK <br/> IN_CHECKING <br/> INACCESSIBLE <br/> IN_CONVERTING <br/> CONVERTED <br/> CONVERSION_REFUSED <br/> ACCESSIBLE <br/> IN_TESTING <br/> IN_APPROVING <br/> REFUSED <br/> ENDORSED <br/> APPROVED <br/> REFUSED_AND_IN_CONVERTING <br/> REFUSED_AND_CONVERTED <br/> BACKUP | SI | NO | stato di lavorazione del file | `fileStatus=ENDORSED` |
+| `requestType` | [enum](#request-type) | SI | NO | tipo di richiesta | `requestType=CERTIFICATION` |
+| `requestStatus` | [enum](#request-status) | SI | NO | stato della richiesta | `requestStatus=CLOSED` |
+| `requestPriority` | [enum](#request-priority) | SI | NO | priorità della richiesta | `requestPriority=0` |
+| `requestCreationDate` | [request-date](#request-date-type) | SI | NO | data di creazione della richiesta | `requestCreationDate=2022-04-22` <br/> `requestCreationDate=2022-04-22T09:01:30` <br/> `requestCreationDate=2022-04-22,2022-04-24` <br/> `requestCreationDate=2022-04-22T09:01:30,2022-04-24T23:50:01` |
+| `requestLastModifiedDate` | [request-date](#request-date-type) | SI | NO | data di ultima modifica dello stato della richiesta | `requestLastModifiedDate=2022-04-22` <br/> `requestLastModifiedDate=2022-04-22T09:01:30` <br/> `requestLastModifiedDate=2022-04-22,2022-04-24` <br/> `requestLastModifiedDate=2022-04-22T09:01:30,2022-04-24T23:50:01` |
+| `fileStatus` | [enum](#file-status) | SI | NO | stato di lavorazione del file | `fileStatus=ENDORSED` |
 ## Esempi di query
 Ecco alcuni esempi di query:
 - lo stato della richiesta LVRE0000000:
@@ -57,14 +57,14 @@ La risposta conterrà 0 o più record, ognuno con i seguenti campi:
 | isbnPrefix | string | NO | prefisso ISBN, sempre nella forma con trattini | `978-88-99630` |
 | isbnCode | string | NO | codice ISBN, sempre nella forma con trattini | `978-88-99630-00-3` |
 | publicationTitle | string | NO | titolo della pubblicazione | `Introduzione. Tra editoria e università` |
-| productType | EPUB2 <br/> EPUB3 | NO | formato dell'epub | `EPUB2` |
-| requestType | CERTIFICATION <br/> CONVERSION_AND_CERTIFICATION | NO | tipo di richiesta | `CERTIFICATION` |
-| requestStatus | WAITING_FOR_PROCESS <br/> IN_PROCESS <br/> REJECTED <br/> CLOSED <br/> LOADED | NO | stato della richiesta | `CLOSED` |
-| requestPriority | 0 <br/> 1 <br/> 2 | NO | priorità della richiesta | `0` |
-| requestCreationDate | date (ISO-8601) | NO | data di creazione della richiesta, nel formato <br/> [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss] | `2022-04-22T10:34:15` |
-| requestLastModifiedDate | date (ISO-8601) | NO | data di ultima modifica dello stato della richiesta, nel formato <br/> [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss] | `2022-04-23T12:50:43` |
-| certificationDate | date (ISO-8601) | NO | data di certificazione del file, nel formato <br/> [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss] | `2022-04-23T12:50:43` |
-| fileStatus | WAITING_FOR_CHECK <br/> IN_CHECKING <br/> INACCESSIBLE <br/> IN_CONVERTING <br/> CONVERTED <br/> CONVERSION_REFUSED <br/> ACCESSIBLE <br/> IN_TESTING <br/> IN_APPROVING <br/> REFUSED <br/> ENDORSED <br/> APPROVED <br/> REFUSED_AND_IN_CONVERTING <br/> REFUSED_AND_CONVERTED <br/> BACKUP | NO | stato di lavorazione del file | `ENDORSED` |
+| productType | [enum](#product-type) | NO | formato dell'epub | `EPUB2` |
+| requestType | [enum](#request-type) | NO | tipo di richiesta | `CERTIFICATION` |
+| requestStatus | [enum](#request-status) | NO | stato della richiesta | `CLOSED` |
+| requestPriority | [enum](#request-priority) | NO | priorità della richiesta | `0` |
+| requestCreationDate | date | NO | data di creazione della richiesta, nel formato ISO-8601 <br/> [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss] | `2022-04-22T10:34:15` |
+| requestLastModifiedDate | date | NO | data di ultima modifica dello stato della richiesta, nel formato ISO-8601 <br/> [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss] | `2022-04-23T12:50:43` |
+| certificationDate | date | NO | data di certificazione del file, nel formato ISO-8601 <br/> [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss] | `2022-04-23T12:50:43` |
+| fileStatus | [enum](#file-status) | NO | stato di lavorazione del file | `ENDORSED` |
 | liaNotes | string | SI | note sulla lavorazione del file redatte da LIA | `testi alternativi per immagini` |
 | automaticChecksOutput | string | SI | note sull'esito dei check automatici | `-----EPUB CHECK VERSIONE 4.0.2----- [...]` |
 | accessibilityMetadata.onix | xml | SI | xml con i codici ONIX sull'accessibilità | `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metadata>\n   <ProductFormFeature>\n [...]` |
@@ -190,10 +190,81 @@ Questo è un esempio di risposta in formato xml contenente una sola richiesta:
   </item>
 </response>
 ```
+## Request Date Type
+Nei campi `requestCreationDate` e `requestLastModifiedDate` delle richieste la data deve essere espressa in formato ISO-8601, con la Time Part opzionale. 
+
+Può essere espressa come:
+- *singola data*: il periodo che viene preso in considerazione è quello dalla data indicata in poi;
+- *range di date*, separate da virgola: il periodo che viene preso in considerazione è quello compreso tra la prima e la seconda data (incluse).
+
+Ogni estremo può essere espresso come:
+- *data senza Time Part*: [YYYY]-[MM]-[DD]
+- *data con Time Part*: [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss]
+
+Esempi di valori validi:
+| Valore | Descrizione |
+| --- | --- |
+| `2022-04-22` | dal 22/04/2022 alla data odierna |
+| `2022-04-22T09:01:30` | dalle 09:01:30 del 22/04/2022 ad ora |
+| `2022-04-22,2022-04-24` | dal 22/04/2022 al 24/04/2022 |
+| `2022-04-22T09:01:30,2022-04-24T23:50:01` | dalle 09:01:30 del 22/04/2022 alle 23:50:01 del 24/04/2022 |
 
 ## Liste Codici
 ### Product Type
+I valori ammessi per il campo `productType` sono:
+| Codice | Label | Descrizione |
+| --- | --- | --- |
+| `E_PUB` | EPUB2 | |
+| `E_PUB3` | EPUB3 | |
 ### Request Type
+I valori ammessi per il campo `requestType` sono:
+| Codice | Label | Descrizione |
+| --- | --- | --- |
+| `CERTIFICATION` | Certificazione | |
+| `CONVERSION_AND_CERTIFICATION` | Conversione E Certificazione | |
 ### Request Status
+I valori ammessi per il campo `requestStatus` sono:
+| Codice | Label | Descrizione |
+| --- | --- | --- |
+| `LOADED` | Caricata | la richiesta è stata caricata nel sistema ma non sono state ancora eseguite le verifiche automatiche |
+| `WAITING_FOR_PROCESS` | Nuova | sono state eseguite le verifiche automatiche ma la richiesta non è stata ancora presa in carico |
+| `IN_PROCESS` | In Lavorazione | la richiesta è stata presa in carico |
+| `REJECTED` | Respinta | la richiesta è stata respinta |
+| `CLOSED` | Evasa | la richiesta è stata evasa |
 ### Request Priority
+I valori ammessi per il campo `requestPriority` sono:
+| Codice | Label | Descrizione |
+| --- | --- | --- |
+| `0` | Bassa | |
+| `1` | Normale | |
+| `2` | Alta | |
 ### File Status
+I valori ammessi per il campo `fileStatus` sono:
+| Codice | Label | Descrizione |
+| --- | --- | --- |
+| `WAITING_FOR_CHECK` | In Attesa | il file è in attesa di essere preso in carico |
+| `IN_CHECKING` | In Verifica | il file è stato preso in carico |
+| `IN_PROCESS` | In Lavorazione | il file è in lavorazione |
+| `INACCESSIBLE` | Non Accessibile | il file è stato dichiarato non accessibile |
+| `IN_CONVERTING` | In Conversione | è in corso la conversione del file per renderlo accessibile |
+| `CONVERTED` | Converted | il file è stato convertito in un nuovo file accessibile |
+| `CONVERSION_REFUSED` | Conversione Rifiutato | non è stato possibile convertire il file |
+| `ACCESSIBLE` | Accessibile | il file è stato dichiarato accessibile |
+| `IN_TESTING` | In Testing | è in corso l'attività di testing sul file |
+| `IN_APPROVING` | In Attesa Di Approvazione | il file è stato convertito ed è in attesa di essere approvato dall'editore |
+| `REFUSED` | Non Approvato | l'editore non ha approvato la conversione del file |
+| `APPROVED` | Approvato | l'editore ha approvato la conversione del file |
+| `ENDORSED` | Certificato | il file è stato certificato come accessibile da LIA |
+| `BACKUP` | Backup | questa è una copia di backup del file (stato interno) |
+| `REFUSED_AND_IN_CONVERTING` | Non Approvato E In Conversione | è in corso la conversione di un file la cui conversione precedente non è stata approvata dall'editore |
+| `REFUSED_AND_CONVERTED` | Non Approvato E Riconvertito | un file la cui conversione precedente non è stata approvata dall'editore è stato nuovamente convertito |
+| `NOT_AVAILABLE` | Non Disponibile | lo stato del file non è disponibile |
+
+## HTTP Status Code
+I possibili HTTP Status Code della risposta sono:
+| Code | Label | Descrizione |
+| --- | --- | --- |
+| 200 | OK | se la risposta alla richiesta è presente nel body della HTTP Response |
+| 400 | Bad Request | se la HTTP Request non è valida (es. non viene indicato nessun parametro di ricerca) |
+| 401 | Unauthorized | se non vengono fornite delle credenziali corrette |
+| 500 | Internal Server Error | se non è possibile elaborare la HTTP Request a causa di un errore interno della API | 
