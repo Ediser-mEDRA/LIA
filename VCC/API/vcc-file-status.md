@@ -70,6 +70,8 @@ La risposta conterrà 0 o più record, ognuno con i seguenti campi:
 | accessibilityMetadata.onix | xml | SI | xml con i codici ONIX sull'accessibilità | `<ProductFormFeature><ProductFormFeatureType>09</ProductFormFeatureType> [...]` |
 | accessibilityMetadata.epub | xml | SI | xml con gli EPUP Accessibility Metadata | `<meta name="dcterms:conformsTo" content="EPUB-A11Y-11_WCAG-21-AA"/> [...]` |
 
+I record vengono restituiti ordinati per `requestId` crescenti.
+
 ### Esempio di risposta in json
 La risposta in formato json è composta da un array contenente da 0 a n oggetti, ognuno dei quali rappresenta una richiesta che corrisponde ai criteri utilizzati nella ricerca.
 
