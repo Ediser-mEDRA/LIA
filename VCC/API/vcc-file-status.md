@@ -72,6 +72,8 @@ La risposta conterrà 0 o più record, ognuno con i seguenti campi:
 
 I record vengono restituiti ordinati per `requestId` crescenti.
 
+Si raccomanda di processare i record nell'ordine restituito dalla API, in particolare se si usa come chiave il codice ISBN. Infatti nella stessa risposta potrebbero essere presenti più record con lo stesso codice ISBN (ad esempio perché una prima richiesta è stata respinta e ne è stata caricata successivamente un'altra con lo stesso codice ISBN), ma quello che contiene l'informazione più aggiornata è sempre l'ultimo (quello con `requestId` più alta).
+
 ### Esempio di risposta in json
 La risposta in formato json è composta da un array contenente da 0 a n oggetti, ognuno dei quali rappresenta una richiesta che corrisponde ai criteri utilizzati nella ricerca.
 
