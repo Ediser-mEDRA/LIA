@@ -207,27 +207,29 @@ E' possibile utilizzare 2 ulteriori parametri per gestire la paginazione:
 | `page` | integer | NO | NO | intero (maggiore o uguale a 1) che indica il numero di pagina. Se non viene indicato alcun valore viene utilizzato il valore di default `1` | `page=5` |
 
 ### Risposta Paginazione
-Se viene utilizzata la paginazione, tra gli HTTP header della response verrà restituito un `Link` con le url per navigare nella paginazione:
+Tra gli HTTP header della response verrà restituito un `Link` con le url per navigare nella paginazione:
 
 | Relation | Descrizione | Esempio |
 | --- | --- | --- |
-| `first` | la prima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=1; rel=first`  |
-| `prev` | la pagina precedente. Questa url viene restituita solamente se self non è la prima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=2; rel=prev` |
-| `self` | la pagina stessa | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=3; rel=self` |
-| `next` | la pagina successiva. Questa url viene restituita solamente se self non è l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=4; rel=next` |
-| `last` | l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=4; rel=last` |
+| `first` | la prima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=1`  |
+| `prev` | la pagina precedente. Questa url viene restituita solamente se `self` non è la prima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=2` |
+| `self` | la pagina stessa | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=3` |
+| `next` | la pagina successiva. Questa url viene restituita solamente se `self` non è l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=4` |
+| `last` | l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=5` |
 
 ### Esempio di HTTP Header Link
 
-Per esempio, se un utente ha 543 file ENDORSED e lancia la richiesta `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED`, nella risposta viene inserito un HTTP Header Link con le seguenti informazioni:
+Per esempio, se un utente ha 543 file ENDORSED e lancia la richiesta `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED`, nella risposta verrà inserito un HTTP header `Link` con le seguenti informazioni:
 ```
 <https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=1>; rel=first, <https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=1>; rel=self, <https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=2>; rel=next, <https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=6>; rel=last
 ```
-Può quindi utilizzare la url `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=2` per ottenere la seconda pagina. Nella risposta verrà inserito un HTTP Header Link con le seguenti informazioni:
+L'utente potrà quindi utilizzare la url `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=2` per ottenere la pagina successiva (`rel=next`). Nella risposta a questa seconda richiesta verrà inserito un HTTP header `Link` con le seguenti informazioni:
 ```
 <https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=1>; rel=first, <https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=1>; rel=prev, <https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=2>; rel=self, <https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=3>; rel=next, <https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=6>; rel=last
 ```
-Per sapere quando le pagine sono terminate basterà verificare che nell'HTTP Header `Link` non sia più presente la rel `next`. Nel caso non sia possibile leggere gli HTTP Header, un meccanismo semplice è quello di incrementare ad ogni ciclo il valore del parametro `page` di una unità finché non viene restituito un insieme vuoto.
+Per sapere quando le pagine sono terminate basterà verificare che nell'HTTP header `Link` non sia più presente la rel `next` o, alternativamente, che `self` coincida con `last`. 
+
+Nel caso non sia possibile leggere gli HTTP Header, un meccanismo semplice per sapere quando le pagine sono terminate è quello di incrementare ad ogni ciclo il valore del parametro `page` di una unità finché non verrà restituito un insieme vuoto.
 
 
 ## Request Date Type
