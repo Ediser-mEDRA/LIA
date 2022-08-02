@@ -198,28 +198,26 @@ Questo è un esempio di risposta in formato xml contenente una sola richiesta:
 ## Paginazione
 Esiste una seconda versione della API, raggiungibile all'endpoint `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status`, che supporta la paginazione.
 
-### Parametri Paginazione
-Oltre ai parametri indicati nella sezione (#parametri) è possibile utilizzare 2 ulteriori parametri per gestire la paginazione
+### Parametri Per La Paginazione
+E' possibile utilizzare 2 ulteriori parametri per gestire la paginazione:
 
 | Parametro | Tipo | Case sensitive | Matching parziale | Descrizione | Esempi |
 | --- | --- | --- | --- | --- | --- |
 | `limit` | integer | NO | NO | intero (compreso tra 1 e 100) che indica il numero massimo di record presenti nella pagina. Se non viene indicato alcun valore viene utilizzato il valore di default `100` | `limit=20` |
-| `page` | integer | NO | NO | intero (maggiore o uguale a 1) che indica il numero di pagina. Se non viene indicato alcun valore viene utilizzato il valore di default `1` | `page=1` |
+| `page` | integer | NO | NO | intero (maggiore o uguale a 1) che indica il numero di pagina. Se non viene indicato alcun valore viene utilizzato il valore di default `1` | `page=5` |
 
 ### Risposta Paginazione
-Il body della HTTP response sarà identico a quello descritto nella sezione (#risposta).
-
-Tra gli HTTP header della response verrà restituito un `Link` con le url per navigare nella paginazione. Le relation supportate sono:
+Se viene utilizzata la paginazione, tra gli HTTP header della response verrà restituito un `Link` con le url per navigare nella paginazione:
 
 | Relation | Descrizione | Esempio |
 | --- | --- | --- |
-| `self` | la pagina stessa | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=3` |
-| `first` | la prima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=1` |
-| `prev` | la pagina precedente. Questa url viene inserita solamente se self non è la prima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=2` |
-| `next` | la pagina successiva. Questa url viene inserita solamente se self non è l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=4` |
-| `last` | l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=4` |
+| `first` | la prima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=1; rel=first`  |
+| `prev` | la pagina precedente. Questa url viene restituita solamente se self non è la prima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=2; rel=prev` |
+| `self` | la pagina stessa | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=3; rel=self` |
+| `next` | la pagina successiva. Questa url viene restituita solamente se self non è l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=4; rel=next` |
+| `last` | l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=4; rel=last` |
 
-### Esempio Http Header Link
+### Esempio di HTTP Header Link
 
 Per esempio, se un utente ha 543 file ENDORSED e lancia la richiesta `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED`, nella risposta viene inserito un HTTP Header Link con le seguenti informazioni:
 ```
