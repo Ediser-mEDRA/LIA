@@ -198,7 +198,7 @@ Questo è un esempio di risposta in formato xml contenente una sola richiesta:
 ## Paginazione
 Esiste una seconda versione della API, raggiungibile all'endpoint `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status`, che supporta la paginazione.
 
-### Parametri Per La Paginazione
+### Parametri per la paginazione
 E' possibile utilizzare 2 ulteriori parametri per gestire la paginazione:
 
 | Parametro | Tipo | Case sensitive | Matching parziale | Descrizione | Esempi |
@@ -217,7 +217,7 @@ Tra gli HTTP header della response viene restituito un `Link` con le url per nav
 | `next` | la pagina successiva. Questa url viene restituita solamente se `self` non è l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=4` |
 | `last` | l'ultima pagina | `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED&page=5` |
 
-### Esempio di HTTP Header Link
+### Esempio di HTTP header Link
 
 Per esempio, se un utente ha 543 file ENDORSED e lancia la richiesta `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v2/status?fileStatus=ENDORSED`, nella risposta verrà inserito un HTTP header `Link` con le seguenti informazioni:
 ```
