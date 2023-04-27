@@ -6,7 +6,7 @@ L'endpoint della API è
 ## Autenticazione
 La API è sotto basic authentication. Le credenziali sono le stesse utilizzabili per accedere al VCC. 
 ## Autorizzazione
-Le regole di autorizzazione sono le stesse in vigore nel VCC, cioè un utente ha visibilità solamente sui prefissi ISBN per i quali è abilitato.
+Le regole di autorizzazione sono le stesse in vigore nel VCC, cioè un utente ha visibilità solamente sui prefissi ISBN o LVPC per i quali è abilitato.
 ## Metodo
 LA API accetta una HTTP Request GET con uno o più dei parametri indicati nel paragrafo [Parametri](#parametri).
 ## Parametri
@@ -18,8 +18,8 @@ I parametri accettati della API sono elencati nella tabella seguente. E' possibi
 | `submissionId` | string | SI | NO | id della sottomissione | `submissionId=LVSU0000000` |
 | `requestId` | string | SI | NO | id della richiesta | `requestId=LVRE0000000` |
 | `publisherName` | string | NO | SI | denominazione dell'editore, completa o parziale | `publisherName=Ediser` <br/> `publisherName=Edi` <br/> `publisherName=SER` |
-| `isbnPrefix` | string | SI | NO | prefisso ISBN, con o senza trattini | `isbnPrefix=978-88-99630` <br/> `isbnPrefix=9788899630` |
-| `isbnCodes` | string | SI | NO | lista di codici ISBN, con o senza trattini, separati da virgola. <br/> E' possibile indicare un massimo di 35 codici. | `isbnCodes=978-88-99630-00-3` <br/> `isbnCodes=9788899630003` <br/> `isbnCodes=978-88-99630-00-3,978-88-99630-01-0` <br/> `isbnCodes=9788899630003,9788899630010` |
+| `identifierPrefix` | string | SI | NO | prefisso ISBN o LVPC, con o senza trattini | `identifierPrefix=978-88-99630` <br/> `identifierPrefix=9788899630` <br/> `identifierPrefix=LVPC-0000` |
+| `identifiers` | string | SI | NO | lista di codici ISBN o LVPC, con o senza trattini, separati da virgola. <br/> E' possibile indicare un massimo di 35 codici. | `identifiers=978-88-99630-00-3` <br/> `identifiers=9788899630003` <br/> `identifiers=978-88-99630-00-3,978-88-99630-01-0` <br/> `identifiers=9788899630003,LVPC000000000` |
 | `publicationTitle` | string | NO | SI | titolo della pubblicazione, completo o parziale | `publicationTitle=Tra+editoria` <br/> `publicationTitle=editoria` <br/> `publicationTitle=TRA` |
 | `requestType` | [enum](#request-type) | SI | NO | tipo di richiesta | `requestType=CERTIFICATION` |
 | `requestStatus` | [enum](#request-status) | SI | NO | stato della richiesta | `requestStatus=CLOSED` |
@@ -37,7 +37,7 @@ Ecco alcuni esempi di richieste:
 `https://vcc.libriitalianiaccessibili.it/api/vcc-files/v1/status?senderUsername=LUSEV000000&requestType=CERTIFICATION&requestCreationDate=2022-04-22,2022-04-24`
 - tutti i file certificati nel mese di aprile 2022 con prefisso ISBN 978-88-99630 e priorità alta:
 
-`https://vcc.libriitalianiaccessibili.it/api/vcc-files/v1/status?fileStatus=ENDORSED&isbnPrefix=978-88-99630&requestLastModifiedDate=2022-04-01,2022-04-30&requestPriority=2`
+`https://vcc.libriitalianiaccessibili.it/api/vcc-files/v1/status?fileStatus=ENDORSED&identifierPrefix=978-88-99630&requestLastModifiedDate=2022-04-01,2022-04-30&requestPriority=2`
 
 ## Formato Risposta
 E' possibile indicare nell'HTTP header `Accept` della HTTP Request il formato desiderato della risposta:
@@ -52,10 +52,10 @@ La risposta conterrà 0 o più record, ognuno con i seguenti campi:
 | senderUsername | string | NO | username dell'utente che ha sottomesso la richiesta | `LUSEV000000` |
 | submissionId | string |  NO | id della sottomissione | `LVSU0000000` |
 | requestId | string | NO | id della richiesta | `LVRE0000000` |
-| publisherName | string | NO | denominazione dell'editore associato al prefisso ISBN | `Ediser` |
-| imprintName | string | NO | denominazione del marchio associato al prefisso ISBN | `Ediser` |
-| isbnPrefix | string | NO | prefisso ISBN, sempre nella forma con trattini | `978-88-99630` |
-| isbnCode | string | NO | codice ISBN, sempre nella forma con trattini | `978-88-99630-00-3` |
+| publisherName | string | NO | denominazione dell'editore associato al prefisso ISBN o LVPC | `Ediser` |
+| imprintName | string | NO | denominazione del marchio associato al prefisso ISBN o LVPC | `Ediser` |
+| identifierPrefix | string | NO | prefisso ISBN o LVPC, sempre nella forma con trattini | `978-88-99630` <br/> `LVPC-0000` |
+| identifier | string | NO | codice ISBN o LVPC, sempre nella forma con trattini | `978-88-99630-00-3` <br/> `LVPC-0000-00000` |
 | publicationTitle | string | NO | titolo della pubblicazione | `Introduzione. Tra editoria e università` |
 | productType | [enum](#product-type) | NO | formato dell'epub | `EPUB2` |
 | requestType | [enum](#request-type) | NO | tipo di richiesta | `CERTIFICATION` |
@@ -72,7 +72,7 @@ La risposta conterrà 0 o più record, ognuno con i seguenti campi:
 
 I record vengono restituiti ordinati per `requestId` crescenti.
 
-Si raccomanda di processare i record nell'ordine restituito dalla API, in particolare se si usa come chiave il codice ISBN. Infatti nella stessa risposta potrebbero essere presenti più record con lo stesso codice ISBN (ad esempio perché una prima richiesta è stata respinta e ne è stata caricata successivamente un'altra con lo stesso codice ISBN), ma quello che contiene l'informazione più aggiornata è sempre l'ultimo (quello con `requestId` più alta).
+Si raccomanda di processare i record nell'ordine restituito dalla API, in particolare se si usa come chiave il codice ISBN o LVPC. Infatti nella stessa risposta potrebbero essere presenti più record con lo stesso codice ISBN o LVPC (ad esempio perché una prima richiesta è stata respinta e ne è stata caricata successivamente un'altra con lo stesso codice ISBN o LVPC), ma quello che contiene l'informazione più aggiornata è sempre l'ultimo (quello con `requestId` più alta).
 
 ### Esempio di risposta in json
 La risposta in formato json è composta da un array contenente da 0 a n oggetti, ognuno dei quali rappresenta una richiesta che corrisponde ai criteri utilizzati nella ricerca.
@@ -85,8 +85,8 @@ Questo è un esempio di risposta in formato json contenente una sola richiesta:
   "requestId": "LVRE0000000",
   "publisherName": "Ediser",
   "imprintName": "Ediser",
-  "isbnPrefix": "978-88-99630",
-  "isbnCode": "978-88-99630-00-3",
+  "identifierPrefix": "978-88-99630",
+  "identifier": "978-88-99630-00-3",
   "publicationTitle": "Introduzione. Tra editoria e università",
   "productType": "EPUB2",
   "requestType": "CERTIFICATION",
@@ -118,8 +118,8 @@ Questo è un esempio di risposta in formato xml contenente una sola richiesta:
     <requestId>LVRE0000000</requestId>
     <publisherName>Ediser</publisherName>
     <imprintName>Ediser</imprintName>
-    <isbnPrefix>978-88-99630</isbnPrefix>
-    <isbnCode>978-88-99630-00-3</isbnCode>
+    <identifierPrefix>978-88-99630</identifierPrefix>
+    <identifier>978-88-99630-00-3</identifier>
     <publicationTitle>Introduzione. Tra editoria e università</publicationTitle>
     <productType>EPUB2</productType>
     <requestType>CERTIFICATION</requestType>
